@@ -1,5 +1,6 @@
 using Foreman.Domain.Repositories;
 using Foreman.Domain.Services;
+using Foreman.Filters;
 using Foreman.Persistence.Contexts.Contexts;
 using Foreman.Persistence.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +33,10 @@ namespace Foreman
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(ErrorResponseFilter));
+            });
             var connString = Configuration.GetConnectionString("ForemanConnection");
             services.AddDbContext<AppDbContext>(options => options.UseMySQL(connString));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -61,6 +65,7 @@ namespace Foreman
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
